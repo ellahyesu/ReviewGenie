@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../providers/review_genie_controller.dart';
 import '../domain/product.dart';
+import '../domain/search_source.dart';
 
 class SearchSection extends ConsumerStatefulWidget {
   const SearchSection({super.key});
@@ -53,10 +54,32 @@ class _SearchSectionState extends ConsumerState<SearchSection> {
     return SectionCard(
       stepLabel: 'Step 1',
       title: '상품 검색',
-      subtitle: '카테고리와 상품명을 함께 검색하고, 결과에서 정확한 상품을 선택합니다.',
+      subtitle: '검색 소스를 선택한 뒤 카테고리와 상품명을 함께 검색합니다.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('검색 소스', style: textTheme.titleLarge),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: SearchSource.values.map((source) {
+              final isSelected = source == state.searchSource;
+              return ChoiceChip(
+                label: Text(source.label),
+                selected: isSelected,
+                onSelected: (_) => controller.updateSearchSource(source),
+              );
+            }).toList(growable: false),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            state.searchSource.description,
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 18),
           Row(
             children: [
               Expanded(
@@ -136,6 +159,7 @@ class _SearchSectionState extends ConsumerState<SearchSection> {
                     product: product,
                     isSelected: isSelected,
                     onTap: () => controller.selectProduct(product),
+                    sourceLabel: state.searchSource.label,
                   ),
                 );
               }).toList(growable: false),
@@ -152,11 +176,13 @@ class _ProductResultTile extends StatelessWidget {
     required this.product,
     required this.isSelected,
     required this.onTap,
+    required this.sourceLabel,
   });
 
   final Product product;
   final bool isSelected;
   final VoidCallback onTap;
+  final String sourceLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -193,9 +219,29 @@ class _ProductResultTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    product.name,
-                    style: textTheme.titleMedium,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          product.name,
+                          style: textTheme.titleMedium,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHigh,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          sourceLabel,
+                          style: textTheme.labelSmall,
+                        ),
+                      ),
+                    ],
                   ),
                   if (product.mallName.isNotEmpty) ...[
                     const SizedBox(height: 6),

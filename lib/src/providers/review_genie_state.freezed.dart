@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReviewGenieState {
 
- String get query; List<String> get recentQueries; List<Product> get searchResults; Product? get selectedProduct; int get starRating; ReviewPlatform get platform; GeneratedReview? get generatedReview; bool get isSearching; bool get isGenerating; String? get searchError; String? get searchMessage; String? get generationError;
+ String get query; List<String> get recentQueries; List<Product> get searchResults; Product? get selectedProduct; int get starRating; ReviewPlatform get platform; SearchSource get searchSource; GeneratedReview? get generatedReview; bool get isSearching; bool get isGenerating; String? get searchError; String? get searchMessage; String? get generationError;
 /// Create a copy of ReviewGenieState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ReviewGenieStateCopyWith<ReviewGenieState> get copyWith => _$ReviewGenieStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReviewGenieState&&(identical(other.query, query) || other.query == query)&&const DeepCollectionEquality().equals(other.recentQueries, recentQueries)&&const DeepCollectionEquality().equals(other.searchResults, searchResults)&&(identical(other.selectedProduct, selectedProduct) || other.selectedProduct == selectedProduct)&&(identical(other.starRating, starRating) || other.starRating == starRating)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.generatedReview, generatedReview) || other.generatedReview == generatedReview)&&(identical(other.isSearching, isSearching) || other.isSearching == isSearching)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.searchError, searchError) || other.searchError == searchError)&&(identical(other.searchMessage, searchMessage) || other.searchMessage == searchMessage)&&(identical(other.generationError, generationError) || other.generationError == generationError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReviewGenieState&&(identical(other.query, query) || other.query == query)&&const DeepCollectionEquality().equals(other.recentQueries, recentQueries)&&const DeepCollectionEquality().equals(other.searchResults, searchResults)&&(identical(other.selectedProduct, selectedProduct) || other.selectedProduct == selectedProduct)&&(identical(other.starRating, starRating) || other.starRating == starRating)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.searchSource, searchSource) || other.searchSource == searchSource)&&(identical(other.generatedReview, generatedReview) || other.generatedReview == generatedReview)&&(identical(other.isSearching, isSearching) || other.isSearching == isSearching)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.searchError, searchError) || other.searchError == searchError)&&(identical(other.searchMessage, searchMessage) || other.searchMessage == searchMessage)&&(identical(other.generationError, generationError) || other.generationError == generationError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,const DeepCollectionEquality().hash(recentQueries),const DeepCollectionEquality().hash(searchResults),selectedProduct,starRating,platform,generatedReview,isSearching,isGenerating,searchError,searchMessage,generationError);
+int get hashCode => Object.hash(runtimeType,query,const DeepCollectionEquality().hash(recentQueries),const DeepCollectionEquality().hash(searchResults),selectedProduct,starRating,platform,searchSource,generatedReview,isSearching,isGenerating,searchError,searchMessage,generationError);
 
 @override
 String toString() {
-  return 'ReviewGenieState(query: $query, recentQueries: $recentQueries, searchResults: $searchResults, selectedProduct: $selectedProduct, starRating: $starRating, platform: $platform, generatedReview: $generatedReview, isSearching: $isSearching, isGenerating: $isGenerating, searchError: $searchError, searchMessage: $searchMessage, generationError: $generationError)';
+  return 'ReviewGenieState(query: $query, recentQueries: $recentQueries, searchResults: $searchResults, selectedProduct: $selectedProduct, starRating: $starRating, platform: $platform, searchSource: $searchSource, generatedReview: $generatedReview, isSearching: $isSearching, isGenerating: $isGenerating, searchError: $searchError, searchMessage: $searchMessage, generationError: $generationError)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ReviewGenieStateCopyWith<$Res>  {
   factory $ReviewGenieStateCopyWith(ReviewGenieState value, $Res Function(ReviewGenieState) _then) = _$ReviewGenieStateCopyWithImpl;
 @useResult
 $Res call({
- String query, List<String> recentQueries, List<Product> searchResults, Product? selectedProduct, int starRating, ReviewPlatform platform, GeneratedReview? generatedReview, bool isSearching, bool isGenerating, String? searchError, String? searchMessage, String? generationError
+ String query, List<String> recentQueries, List<Product> searchResults, Product? selectedProduct, int starRating, ReviewPlatform platform, SearchSource searchSource, GeneratedReview? generatedReview, bool isSearching, bool isGenerating, String? searchError, String? searchMessage, String? generationError
 });
 
 
@@ -62,7 +62,7 @@ class _$ReviewGenieStateCopyWithImpl<$Res>
 
 /// Create a copy of ReviewGenieState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? recentQueries = null,Object? searchResults = null,Object? selectedProduct = freezed,Object? starRating = null,Object? platform = null,Object? generatedReview = freezed,Object? isSearching = null,Object? isGenerating = null,Object? searchError = freezed,Object? searchMessage = freezed,Object? generationError = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? recentQueries = null,Object? searchResults = null,Object? selectedProduct = freezed,Object? starRating = null,Object? platform = null,Object? searchSource = null,Object? generatedReview = freezed,Object? isSearching = null,Object? isGenerating = null,Object? searchError = freezed,Object? searchMessage = freezed,Object? generationError = freezed,}) {
   return _then(_self.copyWith(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,recentQueries: null == recentQueries ? _self.recentQueries : recentQueries // ignore: cast_nullable_to_non_nullable
@@ -70,7 +70,8 @@ as List<String>,searchResults: null == searchResults ? _self.searchResults : sea
 as List<Product>,selectedProduct: freezed == selectedProduct ? _self.selectedProduct : selectedProduct // ignore: cast_nullable_to_non_nullable
 as Product?,starRating: null == starRating ? _self.starRating : starRating // ignore: cast_nullable_to_non_nullable
 as int,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
-as ReviewPlatform,generatedReview: freezed == generatedReview ? _self.generatedReview : generatedReview // ignore: cast_nullable_to_non_nullable
+as ReviewPlatform,searchSource: null == searchSource ? _self.searchSource : searchSource // ignore: cast_nullable_to_non_nullable
+as SearchSource,generatedReview: freezed == generatedReview ? _self.generatedReview : generatedReview // ignore: cast_nullable_to_non_nullable
 as GeneratedReview?,isSearching: null == isSearching ? _self.isSearching : isSearching // ignore: cast_nullable_to_non_nullable
 as bool,isGenerating: null == isGenerating ? _self.isGenerating : isGenerating // ignore: cast_nullable_to_non_nullable
 as bool,searchError: freezed == searchError ? _self.searchError : searchError // ignore: cast_nullable_to_non_nullable
@@ -185,10 +186,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  List<String> recentQueries,  List<Product> searchResults,  Product? selectedProduct,  int starRating,  ReviewPlatform platform,  GeneratedReview? generatedReview,  bool isSearching,  bool isGenerating,  String? searchError,  String? searchMessage,  String? generationError)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  List<String> recentQueries,  List<Product> searchResults,  Product? selectedProduct,  int starRating,  ReviewPlatform platform,  SearchSource searchSource,  GeneratedReview? generatedReview,  bool isSearching,  bool isGenerating,  String? searchError,  String? searchMessage,  String? generationError)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReviewGenieState() when $default != null:
-return $default(_that.query,_that.recentQueries,_that.searchResults,_that.selectedProduct,_that.starRating,_that.platform,_that.generatedReview,_that.isSearching,_that.isGenerating,_that.searchError,_that.searchMessage,_that.generationError);case _:
+return $default(_that.query,_that.recentQueries,_that.searchResults,_that.selectedProduct,_that.starRating,_that.platform,_that.searchSource,_that.generatedReview,_that.isSearching,_that.isGenerating,_that.searchError,_that.searchMessage,_that.generationError);case _:
   return orElse();
 
 }
@@ -206,10 +207,10 @@ return $default(_that.query,_that.recentQueries,_that.searchResults,_that.select
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  List<String> recentQueries,  List<Product> searchResults,  Product? selectedProduct,  int starRating,  ReviewPlatform platform,  GeneratedReview? generatedReview,  bool isSearching,  bool isGenerating,  String? searchError,  String? searchMessage,  String? generationError)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  List<String> recentQueries,  List<Product> searchResults,  Product? selectedProduct,  int starRating,  ReviewPlatform platform,  SearchSource searchSource,  GeneratedReview? generatedReview,  bool isSearching,  bool isGenerating,  String? searchError,  String? searchMessage,  String? generationError)  $default,) {final _that = this;
 switch (_that) {
 case _ReviewGenieState():
-return $default(_that.query,_that.recentQueries,_that.searchResults,_that.selectedProduct,_that.starRating,_that.platform,_that.generatedReview,_that.isSearching,_that.isGenerating,_that.searchError,_that.searchMessage,_that.generationError);case _:
+return $default(_that.query,_that.recentQueries,_that.searchResults,_that.selectedProduct,_that.starRating,_that.platform,_that.searchSource,_that.generatedReview,_that.isSearching,_that.isGenerating,_that.searchError,_that.searchMessage,_that.generationError);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -226,10 +227,10 @@ return $default(_that.query,_that.recentQueries,_that.searchResults,_that.select
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  List<String> recentQueries,  List<Product> searchResults,  Product? selectedProduct,  int starRating,  ReviewPlatform platform,  GeneratedReview? generatedReview,  bool isSearching,  bool isGenerating,  String? searchError,  String? searchMessage,  String? generationError)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  List<String> recentQueries,  List<Product> searchResults,  Product? selectedProduct,  int starRating,  ReviewPlatform platform,  SearchSource searchSource,  GeneratedReview? generatedReview,  bool isSearching,  bool isGenerating,  String? searchError,  String? searchMessage,  String? generationError)?  $default,) {final _that = this;
 switch (_that) {
 case _ReviewGenieState() when $default != null:
-return $default(_that.query,_that.recentQueries,_that.searchResults,_that.selectedProduct,_that.starRating,_that.platform,_that.generatedReview,_that.isSearching,_that.isGenerating,_that.searchError,_that.searchMessage,_that.generationError);case _:
+return $default(_that.query,_that.recentQueries,_that.searchResults,_that.selectedProduct,_that.starRating,_that.platform,_that.searchSource,_that.generatedReview,_that.isSearching,_that.isGenerating,_that.searchError,_that.searchMessage,_that.generationError);case _:
   return null;
 
 }
@@ -241,7 +242,7 @@ return $default(_that.query,_that.recentQueries,_that.searchResults,_that.select
 
 
 class _ReviewGenieState extends ReviewGenieState {
-  const _ReviewGenieState({this.query = '', final  List<String> recentQueries = const <String>[], final  List<Product> searchResults = const <Product>[], this.selectedProduct, this.starRating = 5, this.platform = ReviewPlatform.naverReceipt, this.generatedReview, this.isSearching = false, this.isGenerating = false, this.searchError, this.searchMessage, this.generationError}): _recentQueries = recentQueries,_searchResults = searchResults,super._();
+  const _ReviewGenieState({this.query = '', final  List<String> recentQueries = const <String>[], final  List<Product> searchResults = const <Product>[], this.selectedProduct, this.starRating = 5, this.platform = ReviewPlatform.naverReceipt, this.searchSource = SearchSource.naver, this.generatedReview, this.isSearching = false, this.isGenerating = false, this.searchError, this.searchMessage, this.generationError}): _recentQueries = recentQueries,_searchResults = searchResults,super._();
   
 
 @override@JsonKey() final  String query;
@@ -262,6 +263,7 @@ class _ReviewGenieState extends ReviewGenieState {
 @override final  Product? selectedProduct;
 @override@JsonKey() final  int starRating;
 @override@JsonKey() final  ReviewPlatform platform;
+@override@JsonKey() final  SearchSource searchSource;
 @override final  GeneratedReview? generatedReview;
 @override@JsonKey() final  bool isSearching;
 @override@JsonKey() final  bool isGenerating;
@@ -279,16 +281,16 @@ _$ReviewGenieStateCopyWith<_ReviewGenieState> get copyWith => __$ReviewGenieStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReviewGenieState&&(identical(other.query, query) || other.query == query)&&const DeepCollectionEquality().equals(other._recentQueries, _recentQueries)&&const DeepCollectionEquality().equals(other._searchResults, _searchResults)&&(identical(other.selectedProduct, selectedProduct) || other.selectedProduct == selectedProduct)&&(identical(other.starRating, starRating) || other.starRating == starRating)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.generatedReview, generatedReview) || other.generatedReview == generatedReview)&&(identical(other.isSearching, isSearching) || other.isSearching == isSearching)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.searchError, searchError) || other.searchError == searchError)&&(identical(other.searchMessage, searchMessage) || other.searchMessage == searchMessage)&&(identical(other.generationError, generationError) || other.generationError == generationError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReviewGenieState&&(identical(other.query, query) || other.query == query)&&const DeepCollectionEquality().equals(other._recentQueries, _recentQueries)&&const DeepCollectionEquality().equals(other._searchResults, _searchResults)&&(identical(other.selectedProduct, selectedProduct) || other.selectedProduct == selectedProduct)&&(identical(other.starRating, starRating) || other.starRating == starRating)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.searchSource, searchSource) || other.searchSource == searchSource)&&(identical(other.generatedReview, generatedReview) || other.generatedReview == generatedReview)&&(identical(other.isSearching, isSearching) || other.isSearching == isSearching)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.searchError, searchError) || other.searchError == searchError)&&(identical(other.searchMessage, searchMessage) || other.searchMessage == searchMessage)&&(identical(other.generationError, generationError) || other.generationError == generationError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,const DeepCollectionEquality().hash(_recentQueries),const DeepCollectionEquality().hash(_searchResults),selectedProduct,starRating,platform,generatedReview,isSearching,isGenerating,searchError,searchMessage,generationError);
+int get hashCode => Object.hash(runtimeType,query,const DeepCollectionEquality().hash(_recentQueries),const DeepCollectionEquality().hash(_searchResults),selectedProduct,starRating,platform,searchSource,generatedReview,isSearching,isGenerating,searchError,searchMessage,generationError);
 
 @override
 String toString() {
-  return 'ReviewGenieState(query: $query, recentQueries: $recentQueries, searchResults: $searchResults, selectedProduct: $selectedProduct, starRating: $starRating, platform: $platform, generatedReview: $generatedReview, isSearching: $isSearching, isGenerating: $isGenerating, searchError: $searchError, searchMessage: $searchMessage, generationError: $generationError)';
+  return 'ReviewGenieState(query: $query, recentQueries: $recentQueries, searchResults: $searchResults, selectedProduct: $selectedProduct, starRating: $starRating, platform: $platform, searchSource: $searchSource, generatedReview: $generatedReview, isSearching: $isSearching, isGenerating: $isGenerating, searchError: $searchError, searchMessage: $searchMessage, generationError: $generationError)';
 }
 
 
@@ -299,7 +301,7 @@ abstract mixin class _$ReviewGenieStateCopyWith<$Res> implements $ReviewGenieSta
   factory _$ReviewGenieStateCopyWith(_ReviewGenieState value, $Res Function(_ReviewGenieState) _then) = __$ReviewGenieStateCopyWithImpl;
 @override @useResult
 $Res call({
- String query, List<String> recentQueries, List<Product> searchResults, Product? selectedProduct, int starRating, ReviewPlatform platform, GeneratedReview? generatedReview, bool isSearching, bool isGenerating, String? searchError, String? searchMessage, String? generationError
+ String query, List<String> recentQueries, List<Product> searchResults, Product? selectedProduct, int starRating, ReviewPlatform platform, SearchSource searchSource, GeneratedReview? generatedReview, bool isSearching, bool isGenerating, String? searchError, String? searchMessage, String? generationError
 });
 
 
@@ -316,7 +318,7 @@ class __$ReviewGenieStateCopyWithImpl<$Res>
 
 /// Create a copy of ReviewGenieState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? recentQueries = null,Object? searchResults = null,Object? selectedProduct = freezed,Object? starRating = null,Object? platform = null,Object? generatedReview = freezed,Object? isSearching = null,Object? isGenerating = null,Object? searchError = freezed,Object? searchMessage = freezed,Object? generationError = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? recentQueries = null,Object? searchResults = null,Object? selectedProduct = freezed,Object? starRating = null,Object? platform = null,Object? searchSource = null,Object? generatedReview = freezed,Object? isSearching = null,Object? isGenerating = null,Object? searchError = freezed,Object? searchMessage = freezed,Object? generationError = freezed,}) {
   return _then(_ReviewGenieState(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,recentQueries: null == recentQueries ? _self._recentQueries : recentQueries // ignore: cast_nullable_to_non_nullable
@@ -324,7 +326,8 @@ as List<String>,searchResults: null == searchResults ? _self._searchResults : se
 as List<Product>,selectedProduct: freezed == selectedProduct ? _self.selectedProduct : selectedProduct // ignore: cast_nullable_to_non_nullable
 as Product?,starRating: null == starRating ? _self.starRating : starRating // ignore: cast_nullable_to_non_nullable
 as int,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
-as ReviewPlatform,generatedReview: freezed == generatedReview ? _self.generatedReview : generatedReview // ignore: cast_nullable_to_non_nullable
+as ReviewPlatform,searchSource: null == searchSource ? _self.searchSource : searchSource // ignore: cast_nullable_to_non_nullable
+as SearchSource,generatedReview: freezed == generatedReview ? _self.generatedReview : generatedReview // ignore: cast_nullable_to_non_nullable
 as GeneratedReview?,isSearching: null == isSearching ? _self.isSearching : isSearching // ignore: cast_nullable_to_non_nullable
 as bool,isGenerating: null == isGenerating ? _self.isGenerating : isGenerating // ignore: cast_nullable_to_non_nullable
 as bool,searchError: freezed == searchError ? _self.searchError : searchError // ignore: cast_nullable_to_non_nullable

@@ -1,18 +1,24 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/config/app_environment.dart';
+import '../../core/error/app_exception.dart';
 import '../../core/utils/review_prompt_builder.dart';
 import '../../core/utils/template_review_composer.dart';
 import '../../features/generator/domain/generated_review.dart';
 import '../../features/generator/domain/review_request.dart';
 import '../../features/search/domain/product.dart';
+import '../../features/search/domain/search_source.dart';
+import '../clients/coupang_search_client.dart';
 import '../clients/naver_shop_client.dart';
 import '../clients/open_ai_client.dart';
 
 abstract class ReviewGenieRepository {
   Future<List<String>> loadRecentQueries();
 
-  Future<List<Product>> searchProducts(String query);
+  Future<List<Product>> searchProducts(
+    String query,
+    SearchSource source,
+  );
 
   Future<GeneratedReview> generateReview(ReviewRequest request);
 }
@@ -22,12 +28,14 @@ class ReviewGenieRepositoryImpl implements ReviewGenieRepository {
     required AppEnvironment environment,
     required SharedPreferences sharedPreferences,
     required NaverShopClient naverShopClient,
+    required CoupangSearchClient coupangSearchClient,
     required OpenAiClient openAiClient,
     required ReviewPromptBuilder promptBuilder,
     required TemplateReviewComposer templateReviewComposer,
   })  : _environment = environment,
         _sharedPreferences = sharedPreferences,
         _naverShopClient = naverShopClient,
+        _coupangSearchClient = coupangSearchClient,
         _openAiClient = openAiClient,
         _promptBuilder = promptBuilder,
         _templateReviewComposer = templateReviewComposer;
@@ -37,6 +45,7 @@ class ReviewGenieRepositoryImpl implements ReviewGenieRepository {
   final AppEnvironment _environment;
   final SharedPreferences _sharedPreferences;
   final NaverShopClient _naverShopClient;
+  final CoupangSearchClient _coupangSearchClient;
   final OpenAiClient _openAiClient;
   final ReviewPromptBuilder _promptBuilder;
   final TemplateReviewComposer _templateReviewComposer;
@@ -48,15 +57,33 @@ class ReviewGenieRepositoryImpl implements ReviewGenieRepository {
   }
 
   @override
-  Future<List<Product>> searchProducts(String query) async {
+  Future<List<Product>> searchProducts(
+    String query,
+    SearchSource source,
+  ) async {
     final trimmedQuery = query.trim();
     await _saveRecentQuery(trimmedQuery);
 
+    return switch (source) {
+      SearchSource.naver => _searchNaver(trimmedQuery),
+      SearchSource.coupang => _searchCoupang(trimmedQuery),
+    };
+  }
+
+  Future<List<Product>> _searchNaver(String query) async {
     if (!_environment.hasNaverCredentials) {
-      return _buildMockProducts(trimmedQuery);
+      throw const AppException(
+        '네이버 검색 자격증명이 없습니다.',
+        details: 'NAVER_CLIENT_ID / NAVER_CLIENT_SECRET를 확인하세요.',
+      );
     }
 
-    final items = await _naverShopClient.searchProducts(trimmedQuery);
+    final items = await _naverShopClient.searchProducts(query);
+    return items.map((item) => item.toDomain()).toList(growable: false);
+  }
+
+  Future<List<Product>> _searchCoupang(String query) async {
+    final items = await _coupangSearchClient.searchProducts(query);
     return items.map((item) => item.toDomain()).toList(growable: false);
   }
 
@@ -100,47 +127,5 @@ class ReviewGenieRepositoryImpl implements ReviewGenieRepository {
     ].take(6).toList(growable: false);
 
     await _sharedPreferences.setStringList(_recentQueriesKey, nextQueries);
-  }
-
-  List<Product> _buildMockProducts(String query) {
-    final category = _guessCategory(query);
-
-    return <Product>[
-      Product(
-        id: 'mock-$query-1',
-        name: '$query 프리미엄 에디션',
-        categories: <String>[category, '데모 검색'],
-        mallName: 'ReviewGenie Lab',
-      ),
-      Product(
-        id: 'mock-$query-2',
-        name: '$query 실속형',
-        categories: <String>[category, '입문형'],
-        mallName: 'Preview Store',
-      ),
-      Product(
-        id: 'mock-$query-3',
-        name: '$query 베스트셀러',
-        categories: <String>[category, '인기 상품'],
-        mallName: 'Sample Market',
-      ),
-    ];
-  }
-
-  String _guessCategory(String query) {
-    if (query.contains('치킨') || query.contains('피자') || query.contains('족발')) {
-      return '배달음식';
-    }
-    if (query.contains('의자') || query.contains('책상') || query.contains('조명')) {
-      return '가구';
-    }
-    if (query.contains('샴푸') || query.contains('크림') || query.contains('세럼')) {
-      return '뷰티';
-    }
-    if (query.contains('이어폰') || query.contains('키보드') || query.contains('노트북')) {
-      return '디지털';
-    }
-
-    return '일반 상품';
   }
 }

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/config/app_environment.dart';
 import '../core/utils/review_prompt_builder.dart';
 import '../core/utils/template_review_composer.dart';
+import '../data/clients/coupang_search_client.dart';
 import '../data/clients/naver_shop_client.dart';
 import '../data/clients/open_ai_client.dart';
 import '../data/repositories/review_genie_repository.dart';
@@ -67,6 +68,12 @@ final naverShopClientProvider = Provider<NaverShopClient>((ref) {
   );
 });
 
+final coupangSearchClientProvider = Provider<CoupangSearchClient>((ref) {
+  return CoupangSearchClient(
+    dio: ref.read(naverShopDioProvider),
+  );
+});
+
 final openAiClientProvider = Provider<OpenAiClient>((ref) {
   return OpenAiClient(
     dio: ref.read(openAiDioProvider),
@@ -88,6 +95,7 @@ final reviewGenieRepositoryProvider = Provider<ReviewGenieRepository>((ref) {
     environment: ref.read(appEnvironmentProvider),
     sharedPreferences: ref.read(sharedPreferencesProvider),
     naverShopClient: ref.read(naverShopClientProvider),
+    coupangSearchClient: ref.read(coupangSearchClientProvider),
     openAiClient: ref.read(openAiClientProvider),
     promptBuilder: ref.read(reviewPromptBuilderProvider),
     templateReviewComposer: ref.read(templateReviewComposerProvider),

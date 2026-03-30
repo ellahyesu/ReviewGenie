@@ -5,6 +5,7 @@ import '../data/repositories/review_genie_repository.dart';
 import '../features/generator/domain/review_request.dart';
 import '../features/rating/domain/review_platform.dart';
 import '../features/search/domain/product.dart';
+import '../features/search/domain/search_source.dart';
 import 'app_providers.dart';
 import 'review_genie_state.dart';
 
@@ -40,6 +41,14 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
     );
   }
 
+  void updateSearchSource(SearchSource source) {
+    state = state.copyWith(
+      searchSource: source,
+      searchError: null,
+      searchMessage: null,
+    );
+  }
+
   Future<void> useRecentQuery(String query) async {
     state = state.copyWith(query: query);
     await searchProducts();
@@ -67,7 +76,7 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
     );
 
     try {
-      final results = await _repository.searchProducts(query);
+      final results = await _repository.searchProducts(query, state.searchSource);
       final recentQueries = await _repository.loadRecentQueries();
 
       if (!ref.mounted) {
@@ -83,7 +92,7 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
         searchMessage: null,
       );
     } on AppException catch (error) {
-      final fallbackResults = _buildMockProducts(query);
+      final fallbackResults = _buildMockProducts(query, state.searchSource);
       state = state.copyWith(
         isSearching: false,
         searchResults: fallbackResults,
@@ -91,7 +100,7 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
         searchMessage: _composeSearchMessage(error),
       );
     } catch (_) {
-      final fallbackResults = _buildMockProducts(query);
+      final fallbackResults = _buildMockProducts(query, state.searchSource);
       state = state.copyWith(
         isSearching: false,
         searchResults: fallbackResults,
@@ -185,27 +194,34 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
     return null;
   }
 
-  List<Product> _buildMockProducts(String query) {
+  List<Product> _buildMockProducts(
+    String query,
+    SearchSource source,
+  ) {
     final category = _guessCategory(query);
+    final sourceLabel = switch (source) {
+      SearchSource.naver => '네이버',
+      SearchSource.coupang => '쿠팡',
+    };
 
     return <Product>[
       Product(
-        id: 'fallback-$query-1',
+        id: 'fallback-$sourceLabel-$query-1',
         name: '$query 프리미엄 에디션',
-        categories: <String>[category, '데모 검색'],
+        categories: <String>[category, '$sourceLabel 검색'],
         mallName: 'ReviewGenie Lab',
       ),
       Product(
-        id: 'fallback-$query-2',
+        id: 'fallback-$sourceLabel-$query-2',
         name: '$query 실속형',
         categories: <String>[category, '입문형'],
         mallName: 'Preview Store',
       ),
       Product(
-        id: 'fallback-$query-3',
+        id: 'fallback-$sourceLabel-$query-3',
         name: '$query 베스트셀러',
         categories: <String>[category, '인기 상품'],
-        mallName: 'Sample Market',
+        mallName: '$sourceLabel Demo',
       ),
     ];
   }
