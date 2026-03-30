@@ -38,9 +38,35 @@ class NaverShopClient {
       return dto.items;
     } on DioException catch (error) {
       throw AppException(
-        '네이버 쇼핑 검색을 불러오지 못했습니다.',
-        details: error.message,
+        '네이버 쇼핑 검색에 실패했습니다.',
+        details: _formatDioError(error),
       );
     }
+  }
+
+  String _formatDioError(DioException error) {
+    final buffer = StringBuffer('type=${error.type}');
+
+    final statusCode = error.response?.statusCode;
+    if (statusCode != null) {
+      buffer.write(', status=$statusCode');
+    }
+
+    final responseData = error.response?.data;
+    if (responseData != null) {
+      buffer.write(', response=$responseData');
+    }
+
+    final message = error.message;
+    if (message != null && message.trim().isNotEmpty) {
+      buffer.write(', message=$message');
+    }
+
+    final errorObject = error.error;
+    if (errorObject != null) {
+      buffer.write(', error=$errorObject');
+    }
+
+    return buffer.toString();
   }
 }

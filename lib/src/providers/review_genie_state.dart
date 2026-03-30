@@ -21,6 +21,7 @@ abstract class ReviewGenieState with _$ReviewGenieState {
     @Default(false) bool isSearching,
     @Default(false) bool isGenerating,
     String? searchError,
+    String? searchMessage,
     String? generationError,
   }) = _ReviewGenieState;
 

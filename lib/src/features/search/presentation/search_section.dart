@@ -113,6 +113,16 @@ class _SearchSectionState extends ConsumerState<SearchSection> {
               ),
             ),
           ],
+          if (state.searchMessage != null) ...[
+            const SizedBox(height: 14),
+            Text(
+              state.searchMessage!,
+              style: textTheme.bodyMedium?.copyWith(
+                color: const Color(0xFF8A3B12),
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
           if (state.searchResults.isNotEmpty) ...[
             const SizedBox(height: 18),
             Text('검색 결과', style: textTheme.titleLarge),
@@ -176,8 +186,7 @@ class _ProductResultTile extends StatelessWidget {
               isSelected
                   ? Icons.check_circle_rounded
                   : Icons.shopping_bag_outlined,
-              color:
-                  isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
+              color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 14),
             Expanded(

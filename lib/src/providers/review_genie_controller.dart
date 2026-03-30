@@ -36,6 +36,7 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
     state = state.copyWith(
       query: query,
       searchError: null,
+      searchMessage: null,
     );
   }
 
@@ -50,6 +51,7 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
     if (query.isEmpty) {
       state = state.copyWith(
         searchError: '검색어를 입력해주세요.',
+        searchMessage: null,
       );
       return;
     }
@@ -59,6 +61,7 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
       query: query,
       isSearching: true,
       searchError: null,
+      searchMessage: null,
       generationError: null,
       generatedReview: null,
     );
@@ -77,16 +80,24 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
         recentQueries: recentQueries,
         selectedProduct: _findSelectedProduct(results, selectedProductId),
         searchError: results.isEmpty ? '검색 결과가 없습니다.' : null,
+        searchMessage: null,
       );
     } on AppException catch (error) {
+      final fallbackResults = _buildMockProducts(query);
       state = state.copyWith(
         isSearching: false,
-        searchError: error.message,
+        searchResults: fallbackResults,
+        searchError: null,
+        searchMessage: _composeSearchMessage(error),
       );
     } catch (_) {
+      final fallbackResults = _buildMockProducts(query);
       state = state.copyWith(
         isSearching: false,
-        searchError: '검색 중 알 수 없는 오류가 발생했습니다.',
+        searchResults: fallbackResults,
+        searchError: null,
+        searchMessage:
+            '검색 중 알 수 없는 오류가 발생했습니다. 데모 결과로 대체했습니다.',
       );
     }
   }
@@ -125,7 +136,6 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
       return;
     }
 
-    // Riverpod state = React 전역 state처럼 검색/선택/생성 결과를 한곳에서 관리합니다.
     state = state.copyWith(
       isGenerating: true,
       generationError: null,
@@ -173,5 +183,59 @@ class ReviewGenieController extends Notifier<ReviewGenieState> {
     }
 
     return null;
+  }
+
+  List<Product> _buildMockProducts(String query) {
+    final category = _guessCategory(query);
+
+    return <Product>[
+      Product(
+        id: 'fallback-$query-1',
+        name: '$query 프리미엄 에디션',
+        categories: <String>[category, '데모 검색'],
+        mallName: 'ReviewGenie Lab',
+      ),
+      Product(
+        id: 'fallback-$query-2',
+        name: '$query 실속형',
+        categories: <String>[category, '입문형'],
+        mallName: 'Preview Store',
+      ),
+      Product(
+        id: 'fallback-$query-3',
+        name: '$query 베스트셀러',
+        categories: <String>[category, '인기 상품'],
+        mallName: 'Sample Market',
+      ),
+    ];
+  }
+
+  String _guessCategory(String query) {
+    if (query.contains('치킨') ||
+        query.contains('피자') ||
+        query.contains('족발') ||
+        query.contains('닭강정')) {
+      return '배달음식';
+    }
+    if (query.contains('의자') || query.contains('책상') || query.contains('조명')) {
+      return '가구';
+    }
+    if (query.contains('샴푸') || query.contains('크림') || query.contains('세럼')) {
+      return '뷰티';
+    }
+    if (query.contains('이어폰') || query.contains('키보드') || query.contains('노트북')) {
+      return '디지털';
+    }
+
+    return '일반 상품';
+  }
+
+  String _composeSearchMessage(AppException error) {
+    final details = error.details;
+    if (details == null || details.trim().isEmpty) {
+      return '${error.message} 데모 결과로 대체했습니다.';
+    }
+
+    return '${error.message} ($details) 데모 결과로 대체했습니다.';
   }
 }
