@@ -15,7 +15,7 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 });
 
 final appEnvironmentProvider = Provider<AppEnvironment>((ref) {
-  return const AppEnvironment.fromEnvironment();
+  return AppEnvironment.fromEnvironment();
 });
 
 final naverShopDioProvider = Provider<Dio>((ref) {
