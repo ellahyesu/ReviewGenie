@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../core/config/app_environment.dart';
 import '../../core/error/app_exception.dart';
@@ -67,6 +68,25 @@ class NaverShopClient {
       buffer.write(', error=$errorObject');
     }
 
+    if (_isLikelyWebEnvironmentMismatch(error)) {
+      buffer.write(
+        ', hint=Flutter web direct call failed before any HTTP status was returned. '
+        'Android package registration does not apply in Chrome/web. '
+        'Register NAVER Developers > 비로그인 오픈API 서비스 환경 > WEB and add the current origin '
+        '(for local runs, typically http://localhost:<port>). '
+        'For production, move this call behind a backend proxy because the client secret is exposed in the browser.',
+      );
+    }
+
     return buffer.toString();
+  }
+
+  bool _isLikelyWebEnvironmentMismatch(DioException error) {
+    if (!kIsWeb || error.type != DioExceptionType.connectionError) {
+      return false;
+    }
+
+    final message = error.message ?? '';
+    return message.contains('XMLHttpRequest onError');
   }
 }
