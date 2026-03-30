@@ -4,6 +4,7 @@ class AppEnvironment {
   const AppEnvironment({
     required this.naverClientId,
     required this.naverClientSecret,
+    required this.naverProxyBaseUrl,
     required this.openAiApiKey,
     required this.openAiModel,
   });
@@ -11,11 +12,16 @@ class AppEnvironment {
   AppEnvironment.fromEnvironment()
       : naverClientId = _read('NAVER_CLIENT_ID'),
         naverClientSecret = _read('NAVER_CLIENT_SECRET'),
+        naverProxyBaseUrl = _read(
+          'NAVER_PROXY_BASE_URL',
+          fallback: 'http://localhost:7070/api/naver',
+        ),
         openAiApiKey = _read('OPENAI_API_KEY'),
         openAiModel = _read('OPENAI_MODEL', fallback: 'gpt-4.1-mini');
 
   final String naverClientId;
   final String naverClientSecret;
+  final String naverProxyBaseUrl;
   final String openAiApiKey;
   final String openAiModel;
 
@@ -34,6 +40,8 @@ class AppEnvironment {
       'NAVER_CLIENT_ID' => const String.fromEnvironment('NAVER_CLIENT_ID'),
       'NAVER_CLIENT_SECRET' =>
         const String.fromEnvironment('NAVER_CLIENT_SECRET'),
+      'NAVER_PROXY_BASE_URL' =>
+        const String.fromEnvironment('NAVER_PROXY_BASE_URL'),
       'OPENAI_API_KEY' => const String.fromEnvironment('OPENAI_API_KEY'),
       'OPENAI_MODEL' => const String.fromEnvironment(
           'OPENAI_MODEL',

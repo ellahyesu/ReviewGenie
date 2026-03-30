@@ -20,9 +20,12 @@ final appEnvironmentProvider = Provider<AppEnvironment>((ref) {
 });
 
 final naverShopDioProvider = Provider<Dio>((ref) {
+  final environment = ref.read(appEnvironmentProvider);
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'https://openapi.naver.com/v1/search',
+      baseUrl: kIsWeb
+          ? environment.naverProxyBaseUrl
+          : 'https://openapi.naver.com/v1/search',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
     ),
